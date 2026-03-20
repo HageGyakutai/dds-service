@@ -1,181 +1,202 @@
-# service_template
+# dds-service
 
-Базовый шаблон Python-сервиса с единым набором проверок качества кода.
+## Назначение
 
-# 📌 <PROJECT_NAME>
+Тестовое задание для позиции backend-разработчик.
 
-> Краткое описание проекта (1–2 предложения).
-> Например: Backend-сервис для онлайн-меню ресторана с REST API для управления блюдами, категориями и пользователями.
-
----
-
-## 🚀 Описание проекта
-
-<!--
-Расскажи:
-- что делает проект
-- для кого он
-- какую задачу решает
--->
-
-<описание проекта>
+Веб-приложение для учета движения денежных средств (ДДС): создание, просмотр, редактирование,
+удаление и фильтрация операций.
 
 ---
 
-## 🎯 Основные возможности (Features)
+## Описание проекта
+Сервис помогает вести учет финансовых операций с учетом логических зависимостей:
 
-<!--
-Список ключевых функций проекта
--->
+- категория принадлежит типу операции;
+- подкатегория принадлежит категории.
+---
 
-- <функция 1>
-- <функция 2>
-- <функция 3>
+## Основные возможности
+
+- CRUD для записей ДДС;
+- фильтрация по дате, статусу, типу, категории и подкатегории;
+- CRUD для справочников (статусы, типы, категории, подкатегории);
+- валидация бизнес-правил на сервере и клиенте.
 
 ---
 
-## 🛠 Технологический стек (Tech Stack)
+## Технологический стек
 
-<!--
-Перечисли только важное
--->
-
-- Python
-- FastAPI
+- Python 3.13
+- Django
+- Django ORM
+- Django REST Framework
 - PostgreSQL
-- SQLAlchemy
-- Redis
-- Celery
-- Docker
-- Nginx
+- Docker / Docker Compose
+- uv, pre-commit, GitHub Actions
 
 ---
-
-## 🧱 Архитектура проекта
-
-<!--
-Опиши, как устроен проект
--->
-
-Проект построен с использованием слоистой архитектуры:
-
-- **api** — обработка HTTP-запросов
-- **services** — бизнес-логика
-- **repositories** — работа с базой данных
-- **models** — модели БД
-- **schemas** — Pydantic-схемы
-
----
-
-## 📂 Структура проекта
-
-```text
-app/
-├── api/          # Роутеры (endpoints)
-├── core/         # Конфигурация и настройки
-├── db/           # Подключение к БД
-├── models/       # SQLAlchemy модели
-├── schemas/      # Pydantic схемы
-├── services/     # Бизнес-логика
-├── repositories/ # Работа с БД
-└── main.py       # Точка входа
-```
-
-## ⚙️ Быстрый старт (Quick Start)
-1. Клонировать репозиторий
-git clone <REPO_URL>
-cd <PROJECT_NAME>
-2. Создать .env или сделать копию из .env.example
-# Database
-POSTGRES_DB=<db_name>
-POSTGRES_USER=<user>
-POSTGRES_PASSWORD=<password>
-POSTGRES_HOST=db
-POSTGRES_PORT=5432
-
-# Security
-SECRET_KEY=<your_secret_key>
-3. Запуск через Docker
-docker compose up --build
-4. Документация API
-
-Swagger: http://localhost:8000/docs
-
-ReDoc: http://localhost:8000/redoc
-
-## 🔑 Переменные окружения
-Переменная	Описание
-POSTGRES_DB 	Имя базы данных
-POSTGRES_USER 	Пользователь БД
-POSTGRES_PASSWORD 	Пароль
-POSTGRES_HOST 	Хост
-POSTGRES_PORT 	Порт
-SECRET_KEY 	Секрет для JWT
-
-## 📡 Основные эндпоинты
-<Заполнить эндпоинтами>
-
-## 🧪 Тестирование
-pytest
-
-## 🧠 Почему был создан проект
-
-<почему ты сделал этот проект>
-
-## 🧩 Технические решения
-
-- Использование FastAPI для высокой производительности
-- PostgreSQL для хранения данных
-- Redis для кэширования
-- Celery для фоновых задач
-- Docker для контейнеризации
-## 🔮 Планы развития (Roadmap)
-<-- Пример -->
- [] Базовая структура проекта
- [] Docker Compose
- [] JWT-аутентификация
- [] Redis кэширование
- [] Celery
- [] Nginx
- [] CI/CD
-
-## 👤 Автор
-
-<ТВОЕ ИМЯ>
-
-GitHub: https://github.com/
-<USERNAME>
-
-## Требования
-
-- Python `3.13`
-- `uv` (`https://docs.astral.sh/uv/`)
 
 ## Быстрый старт
 
 ```bash
-uv venv --python=3.13
-uv sync --extra dev
+docker compose up -d --build
 ```
 
-## Локальные проверки
+После запуска сервис будет доступен:
+
+- API: http://localhost:8000/
+- Admin: http://localhost:8000/admin/
+
+---
+
+## Архитектура проекта
+
+Проект разделен на два основных домена:
+
+- `transactions` — работа с денежными операциями (ДДС)
+
+- `references` — справочники и классификаторы
+
+Связи моделей:
+```text
+Transaction
+ ├── status → Status
+ ├── type → TransactionType
+ ├── category → Category
+ └── subcategory → SubCategory
+
+Category → TransactionType
+SubCategory → Category
+```
+
+---
+
+## Структура проекта
+
+```text
+.
+├── apps/
+│   ├── references/        # справочники (статусы, типы, категории, подкатегории)
+│   │   ├── management/    # кастомные команды (создание суперпользователя)
+│   │   ├── models.py
+│   │   ├── admin.py
+│   │   └── views.py
+│   │
+│   └── transactions/      # операции ДДС (основная бизнес-логика)
+│       ├── models.py
+│       ├── admin.py
+│       └── views.py
+│
+├── config/                # конфигурация Django
+│   ├── settings/
+│   │   ├── base.py
+│   │   └── components/    # разбитые настройки (database, middleware, и т.д.)
+│   ├── urls.py
+│   └── wsgi.py
+│
+├── docs/                  # документация и материалы задания
+├── locale/                # переводы (i18n)
+├── logs/                  # логи приложения
+├── tests/                 # тесты
+│
+├── Dockerfile
+├── docker-compose.yml
+├── entrypoint.sh          # инициализация контейнера (миграции, суперпользователь)
+├── manage.py
+└── pyproject.toml
+```
+---
+
+## Запуск проекта
+
+Клонировать репозиторий
+```bash
+git clone https://github.com/HageGyakutai/dds-service.git
+cd dds-service
+```
+Подготовить переменные окружения:
+ ```bash
+ cp .env.example .env
+ ```
+Запуск через Docker
+```bash
+docker compose up -d --build
+```
+
+---
+
+## Доступ к админ-панели
+Админ-панель доступна по адресу:
+
+http://localhost:8000/admin/
+
+Суперпользователь создается автоматически при запуске контейнера
+через кастомную Django management-команду:
+```bash
+uv run python manage.py createsuperuser_if_none_exists
+```
+Данные берутся из переменных окружения `.env`.
+
+### Данные по умолчанию
+
+```text
+Username: admin
+Email: admin@example.com
+Password: admin
+```
+### Настройка
+
+Вы можете изменить данные суперпользователя в `.env`:
+```dotenv
+DJANGO_SUPERUSER_USERNAME=admin
+DJANGO_SUPERUSER_EMAIL=admin@example.com
+DJANGO_SUPERUSER_PASSWORD=admin
+```
+> Рекомендуется изменить пароль перед использованием.
+
+---
+
+
+## Документация API
+
+В разработке.
+
+---
+
+## Основные эндпоинты
+
+В разработке.
+
+---
+
+## Тестирование
 
 ```bash
-uv run black --check .
-uv run flake8 .
-uv run mypy .
-uv run pytest --maxfail=1 --disable-warnings
+uv run pytest
 ```
 
-## Pre-commit
+---
+
+## Автор
+
+Запольских Сергей
+
+https://github.com/HageGyakutai
+
+---
+
+
+## Локальные проверки
 
 ```bash
 uv run pre-commit install
 uv run pre-commit run --all-files
 ```
 
-## Docker
-
 ```bash
-docker compose up --build
+uv run black --check .
+uv run flake8 .
+uv run mypy .
+uv run pytest --maxfail=1 --disable-warnings
 ```
