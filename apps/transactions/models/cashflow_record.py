@@ -103,8 +103,10 @@ class CashflowRecord(TimeStampedMixin, UUIDMixin):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return (f"{self.record_date} | {self.operation_type} |"
-                f" {self.category}/{self.subcategory} | {self.amount}")
+        return (
+            f"{self.record_date} | {self.operation_type} |"
+            f" {self.category}/{self.subcategory} | {self.amount}"
+        )
 
     def __repr__(self):
         return f"<CashflowRecord id={self.id} amount={self.amount}>"
