@@ -77,34 +77,48 @@ SubCategory → Category
 ```text
 .
 ├── apps/
-│   ├── references/        # справочники (статусы, типы, категории, подкатегории)
-│   │   ├── management/    # кастомные команды (создание суперпользователя)
-│   │   ├── models.py
+│   ├── references/              # справочники: статусы, типы, категории, подкатегории
+│   │   ├── management/
+│   │   │   └── commands/        # кастомные management-команды
+│   │   ├── migrations/
+│   │   ├── models/
+│   │   │   ├── mixins.py
+│   │   │   ├── status.py
+│   │   │   ├── operation_type.py
+│   │   │   ├── category.py
+│   │   │   └── subcategory.py
 │   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── tests.py
 │   │   └── views.py
 │   │
-│   └── transactions/      # операции ДДС (основная бизнес-логика)
-│       ├── models.py
+│   └── transactions/           # денежные операции ДДС
+│       ├── migrations/
+│       ├── models/
+│       │   └── cashflow_record.py
 │       ├── admin.py
+│       ├── apps.py
+│       ├── tests.py
 │       └── views.py
 │
-├── config/                # конфигурация Django
+├── config/                     # конфигурация Django-проекта
 │   ├── settings/
-│   │   ├── base.py
-│   │   └── components/    # разбитые настройки (database, middleware, и т.д.)
+│   │   ├── components/         # database, middleware, templates, static, etc.
+│   │   └── base.py
 │   ├── urls.py
+│   ├── views.py
+│   ├── asgi.py
 │   └── wsgi.py
 │
-├── docs/                  # документация и материалы задания
-├── locale/                # переводы (i18n)
-├── logs/                  # логи приложения
-├── tests/                 # тесты
+├── templates/                  # базовые HTML-шаблоны
+├── tests/                      # smoke-тесты проекта
 │
 ├── Dockerfile
 ├── docker-compose.yml
-├── entrypoint.sh          # инициализация контейнера (миграции, суперпользователь)
+├── entrypoint.sh
 ├── manage.py
-└── pyproject.toml
+├── pyproject.toml
+└── README.md
 ```
 ---
 
@@ -195,6 +209,7 @@ uv run pre-commit run --all-files
 ```
 
 ```bash
+uv sync --extra dev
 uv run black --check .
 uv run flake8 .
 uv run mypy .
