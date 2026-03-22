@@ -105,7 +105,6 @@ name = "dds-service"
 version = "0.1.0"
 source = { editable = "." }
 dependencies = [
-    { name = "black" },
     { name = "django" },
     { name = "django-filter" },
     { name = "djangorestframework" },
@@ -127,7 +126,6 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "black", specifier = ">=24.10.0" },
     { name = "black", marker = "extra == 'dev'", specifier = ">=24.8.0,<25.0" },
     { name = "django", specifier = ">=5.2,<5.3" },
     { name = "django-filter", specifier = ">=25.1,<26" },

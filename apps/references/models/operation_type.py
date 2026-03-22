@@ -1,9 +1,10 @@
-from django.utils.translation import gettext_lazy as _
 from django.db import models
+from django.utils.translation import gettext_lazy as _
+
 from .mixins import TimeStampedMixin, UUIDMixin
 
 
-class Status(TimeStampedMixin, UUIDMixin):
+class OperationType(TimeStampedMixin, UUIDMixin):
     name = models.CharField(
         max_length=64,
         unique=True,
@@ -11,12 +12,12 @@ class Status(TimeStampedMixin, UUIDMixin):
     )
 
     class Meta:
-        verbose_name = _("Status")
-        verbose_name_plural = _("Statuses")
+        verbose_name = _("Operation Type")
+        verbose_name_plural = _("Operation Types")
         ordering = ("name",)
 
     def __str__(self):
         return self.name
 
     def __repr__(self):
-        return f"<Status: {self.name}>"
+        return f"<OperationType: {self.name}>"
