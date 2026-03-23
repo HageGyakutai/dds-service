@@ -15,6 +15,9 @@ echo "PostgreSQL started."
 echo "Applying database migrations..."
 uv run python manage.py migrate
 
+echo "Seeding reference data..."
+uv run python manage.py seed_references
+
 echo "Checking for superuser..."
 uv run python manage.py createsuperuser_if_none_exists
 
