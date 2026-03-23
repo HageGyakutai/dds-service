@@ -11,6 +11,7 @@ def test_healthcheck_returns_ok(client):
     response = client.get(reverse("healthcheck"))
     assert response.status_code == 200
 
+
 @pytest.mark.django_db
 def test_home_returns_ok(client):
     response = client.get(reverse("home"))
