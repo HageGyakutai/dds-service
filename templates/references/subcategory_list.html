@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Подкатегории</h1>
+
+  <p>
+    <a href="{% url 'references:subcategory_create' %}">Добавить подкатегорию</a>
+  </p>
+
+  <ul>
+    {% for subcategory in subcategories %}
+      <li>
+        {{ subcategory.name }} ({{ subcategory.category }})
+        <a href="{% url 'references:subcategory_update' subcategory.pk %}">Редактировать</a>
+        <a href="{% url 'references:subcategory_delete' subcategory.pk %}">Удалить</a>
+      </li>
+    {% empty %}
+      <li>Подкатегории пока не добавлены.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
