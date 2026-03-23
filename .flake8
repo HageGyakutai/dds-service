@@ -7,3 +7,4 @@ per-file-ignores =
     apps/references/models/__init__.py:F401,F403,
     apps/transactions/models/__init__.py:F401,F403,
     apps/references/views/__init__.py:F401,F403,
+    apps/transactions/views/__init__.py:F401,F403,
