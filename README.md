@@ -54,19 +54,19 @@ docker compose up -d --build
 
 Проект разделен на два основных домена:
 
-- `transactions` — работа с денежными операциями (ДДС)
-
+- `transactions` — работа с денежными операциями ДДС
 - `references` — справочники и классификаторы
 
 Связи моделей:
+
 ```text
-Transaction
+CashflowRecord
  ├── status → Status
- ├── type → TransactionType
+ ├── operation_type → OperationType
  ├── category → Category
  └── subcategory → SubCategory
 
-Category → TransactionType
+Category → OperationType
 SubCategory → Category
 ```
 
@@ -77,9 +77,12 @@ SubCategory → Category
 ```text
 .
 ├── apps/
-│   ├── references/              # справочники: статусы, типы, категории, подкатегории
+│   ├── references/            # справочники: статусы, типы, категории, подкатегории
+│   │   ├── data/               # seed-данные справочников
 │   │   ├── management/
-│   │   │   └── commands/        # кастомные management-команды
+│   │   │   └── commands/      # кастомные management-команды
+│   │   │       ├── createsuperuser_if_none_exists.py  
+│   │   │       └── seed_references.py     
 │   │   ├── migrations/
 │   │   ├── models/
 │   │   │   ├── mixins.py
@@ -120,6 +123,8 @@ SubCategory → Category
 ├── pyproject.toml
 └── README.md
 ```
+- `createsuperuser_if_none_exists.py` — автосоздание суперпользователя
+- `seed_references.py` — заполнение стартовых справочников
 ---
 
 ## Запуск проекта
@@ -136,6 +141,15 @@ cd dds-service
 Запуск через Docker
 ```bash
 docker compose up -d --build
+```
+> При старте контейнера автоматически применяются миграции, выполняется заполнение стартовых справочников и проверяется наличие суперпользователя.
+
+---
+
+## Миграции и заполнение справочников
+```bash
+uv run python manage.py migrate
+uv run python manage.py seed_references
 ```
 
 ---
