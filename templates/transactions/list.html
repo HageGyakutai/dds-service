@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Записи ДДС</h1>
+
+  <p>
+    <a href="{% url 'transactions:cashflow_record_create' %}">Добавить запись</a>
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Дата</th>
+        <th>Статус</th>
+        <th>Тип</th>
+        <th>Категория</th>
+        <th>Подкатегория</th>
+        <th>Сумма</th>
+        <th>Комментарий</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for record in cashflow_records %}
+        <tr>
+          <td>{{ record.record_date }}</td>
+          <td>{{ record.status }}</td>
+          <td>{{ record.operation_type }}</td>
+          <td>{{ record.category }}</td>
+          <td>{{ record.subcategory }}</td>
+          <td>{{ record.amount }}</td>
+          <td>{{ record.comment|default:"-" }}</td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="7">Записей пока нет.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

@@ -18,10 +18,10 @@
 
 ## Основные возможности
 
-- CRUD для записей ДДС;
-- фильтрация по дате, статусу, типу, категории и подкатегории;
-- CRUD для справочников (статусы, типы, категории, подкатегории) через отдельный раздел /references/;
-- валидация бизнес-правил на сервере и клиенте.
+- создание записей ДДС с проверкой логических зависимостей между типом операции, категорией и подкатегорией;
+- просмотр списка записей ДДС;
+- управление справочниками (`Status`, `OperationType`, `Category`, `SubCategory`) через отдельный раздел `/references/`;
+- серверная валидация обязательных полей и доменных бизнес-правил.
 
 ---
 
@@ -59,6 +59,10 @@ docker compose up -d --build
 
 Раздел `/references/` предназначен для управления справочниками.
 В нём доступны списки и CRUD для `Status`, `OperationType`, `Category` и `SubCategory`.
+
+Раздел `/transactions/` содержит пользовательский flow для записей ДДС:
+список записей и форму создания с серверной валидацией связей между
+типом операции, категорией и подкатегорией.
 
 Связи моделей:
 
@@ -102,10 +106,12 @@ SubCategory → Category
 │       ├── migrations/
 │       ├── models/
 │       │   └── cashflow_record.py
+│       ├── views/              # список и создание записей ДДС
+│       ├── forms.py            # формы и валидация записей ДДС
 │       ├── admin.py
 │       ├── apps.py
 │       ├── tests.py
-│       └── views.py
+│       └── urls.py
 │
 ├── config/                     # конфигурация Django-проекта
 │   ├── settings/
@@ -118,10 +124,11 @@ SubCategory → Category
 │
 ├── templates/
 │   ├── references/             # шаблоны раздела справочников
+│   ├── transactions/           # шаблоны списка и формы записей ДДС
 │   ├── base.html
 │   └── home.html
 │
-├── tests/                      # smoke-тесты проекта
+├── tests/                      # тесты проекта
 ├── Dockerfile
 ├── docker-compose.yml
 ├── entrypoint.sh
@@ -207,6 +214,8 @@ DJANGO_SUPERUSER_PASSWORD=admin
 - [Типы операций](http://localhost:8000/references/operation-types/)
 - [Категории](http://localhost:8000/references/categories/)
 - [Подкатегории](http://localhost:8000/references/subcategories/)
+- [Записи ДДС](http://localhost:8000/transactions/)
+- [Создание записи ДДС](http://localhost:8000/transactions/create/)
 - [Django Admin](http://localhost:8000/admin/)
 
 ---
@@ -216,6 +225,8 @@ DJANGO_SUPERUSER_PASSWORD=admin
 ```bash
 uv run pytest
 ```
+Ключевые проверки валидации записи ДДС находятся в `tests/test_cashflow_validation.py`.
+
 
 ---
 
