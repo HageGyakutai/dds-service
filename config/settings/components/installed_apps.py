@@ -8,7 +8,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    # locale apps
+    "django_filters",
     "apps.transactions",
     "apps.references",
 ]

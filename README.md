@@ -19,7 +19,8 @@
 ## Основные возможности
 
 - создание записей ДДС с проверкой логических зависимостей между типом операции, категорией и подкатегорией;
-- просмотр списка записей ДДС;
+- просмотр списка записей ДДС на главной странице;
+- фильтрация записей ДДС по периоду дат, статусу, типу операции, категории и подкатегории;
 - управление справочниками (`Status`, `OperationType`, `Category`, `SubCategory`) через отдельный раздел `/references/`;
 - серверная валидация обязательных полей и доменных бизнес-правил.
 
@@ -60,9 +61,10 @@ docker compose up -d --build
 Раздел `/references/` предназначен для управления справочниками.
 В нём доступны списки и CRUD для `Status`, `OperationType`, `Category` и `SubCategory`.
 
+Главная страница `/` отображает список записей ДДС с фильтрацией и пагинацией.
+
 Раздел `/transactions/` содержит пользовательский flow для записей ДДС:
-список записей и форму создания с серверной валидацией связей между
-типом операции, категорией и подкатегорией.
+форму создания записи и routes, связанные с операциями ДДС.
 
 Связи моделей:
 
@@ -103,10 +105,13 @@ SubCategory → Category
 │   │   └── urls.py
 │   │
 │   └── transactions/           # денежные операции ДДС
+│       ├── management/
+│       │   └── commands/       # management-команды для записей ДДС
 │       ├── migrations/
 │       ├── models/
 │       │   └── cashflow_record.py
 │       ├── views/              # список и создание записей ДДС
+│       ├── filters.py          # фильтрация списка записей ДДС
 │       ├── forms.py            # формы и валидация записей ДДС
 │       ├── admin.py
 │       ├── apps.py
@@ -125,8 +130,7 @@ SubCategory → Category
 ├── templates/
 │   ├── references/             # шаблоны раздела справочников
 │   ├── transactions/           # шаблоны списка и формы записей ДДС
-│   ├── base.html
-│   └── home.html
+│   └── base.html
 │
 ├── tests/                      # тесты проекта
 ├── Dockerfile
@@ -138,6 +142,8 @@ SubCategory → Category
 ```
 - `createsuperuser_if_none_exists.py` — автосоздание суперпользователя
 - `seed_references.py` — заполнение стартовых справочников
+- `seed_cashflow_records.py` — генерация тестовых записей ДДС для ручной проверки фильтров и пагинации
+
 ---
 
 ## Запуск проекта
@@ -157,12 +163,23 @@ docker compose up -d --build
 ```
 > При старте контейнера автоматически применяются миграции, выполняется заполнение стартовых справочников и проверяется наличие суперпользователя.
 
+Для ручной проверки списка, фильтров и пагинации можно сгенерировать тестовые записи.
+По умолчанию команда создаёт `100` записей:
+
+```bash
+docker compose exec web uv run python manage.py seed_cashflow_records
+```
+Дополнительные параметры:
+- `--count` — количество записей
+- `--start-date` — дата начала генерации в формате YYYY-MM-DD
+
 ---
 
 ## Миграции и заполнение справочников
 ```bash
 uv run python manage.py migrate
 uv run python manage.py seed_references
+uv run python manage.py seed_cashflow_records
 ```
 
 ---
@@ -198,23 +215,16 @@ DJANGO_SUPERUSER_PASSWORD=admin
 
 ---
 
-
-## Документация API
-
-В разработке.
-
----
-
 ## Основные эндпоинты
 
-- [Главная страница](http://localhost:8000/)
+- [Главная страница / список записей ДДС](http://localhost:8000/)
 - [Healthcheck](http://localhost:8000/health/)
 - [Справочники](http://localhost:8000/references/)
 - [Статусы](http://localhost:8000/references/statuses/)
 - [Типы операций](http://localhost:8000/references/operation-types/)
 - [Категории](http://localhost:8000/references/categories/)
 - [Подкатегории](http://localhost:8000/references/subcategories/)
-- [Записи ДДС](http://localhost:8000/transactions/)
+- [Список записей ДДС](http://localhost:8000/transactions/)
 - [Создание записи ДДС](http://localhost:8000/transactions/create/)
 - [Django Admin](http://localhost:8000/admin/)
 
@@ -225,8 +235,8 @@ DJANGO_SUPERUSER_PASSWORD=admin
 ```bash
 uv run pytest
 ```
-Ключевые проверки валидации записи ДДС находятся в `tests/test_cashflow_validation.py`.
-
+Ключевые проверки серверной валидации записи ДДС находятся в tests/test_cashflow_validation.py.
+Проверки списка, фильтрации и пагинации находятся в tests/test_cashflow_list_filtering.py.
 
 ---
 
@@ -237,7 +247,6 @@ uv run pytest
 https://github.com/HageGyakutai
 
 ---
-
 
 ## Локальные проверки
 
