@@ -20,7 +20,7 @@
 
 - CRUD для записей ДДС;
 - фильтрация по дате, статусу, типу, категории и подкатегории;
-- CRUD для справочников (статусы, типы, категории, подкатегории);
+- CRUD для справочников (статусы, типы, категории, подкатегории) через отдельный раздел /references/;
 - валидация бизнес-правил на сервере и клиенте.
 
 ---
@@ -45,7 +45,7 @@ docker compose up -d --build
 
 После запуска сервис будет доступен:
 
-- API: http://localhost:8000/
+- Web: http://localhost:8000/
 - Admin: http://localhost:8000/admin/
 
 ---
@@ -56,6 +56,9 @@ docker compose up -d --build
 
 - `transactions` — работа с денежными операциями ДДС
 - `references` — справочники и классификаторы
+
+Раздел `/references/` предназначен для управления справочниками.
+В нём доступны списки и CRUD для `Status`, `OperationType`, `Category` и `SubCategory`.
 
 Связи моделей:
 
@@ -77,12 +80,10 @@ SubCategory → Category
 ```text
 .
 ├── apps/
-│   ├── references/            # справочники: статусы, типы, категории, подкатегории
+│   ├── references/             # справочники: статусы, типы, категории, подкатегории
 │   │   ├── data/               # seed-данные справочников
 │   │   ├── management/
-│   │   │   └── commands/      # кастомные management-команды
-│   │   │       ├── createsuperuser_if_none_exists.py  
-│   │   │       └── seed_references.py     
+│   │   │   └── commands/       # кастомные management-команды
 │   │   ├── migrations/
 │   │   ├── models/
 │   │   │   ├── mixins.py
@@ -90,10 +91,12 @@ SubCategory → Category
 │   │   │   ├── operation_type.py
 │   │   │   ├── category.py
 │   │   │   └── subcategory.py
+│   │   ├── views/              # CRUD-views раздела справочников
+│   │   ├── forms.py            # формы для управления справочниками
 │   │   ├── admin.py
 │   │   ├── apps.py
 │   │   ├── tests.py
-│   │   └── views.py
+│   │   └── urls.py
 │   │
 │   └── transactions/           # денежные операции ДДС
 │       ├── migrations/
@@ -113,9 +116,12 @@ SubCategory → Category
 │   ├── asgi.py
 │   └── wsgi.py
 │
-├── templates/                  # базовые HTML-шаблоны
-├── tests/                      # smoke-тесты проекта
+├── templates/
+│   ├── references/             # шаблоны раздела справочников
+│   ├── base.html
+│   └── home.html
 │
+├── tests/                      # smoke-тесты проекта
 ├── Dockerfile
 ├── docker-compose.yml
 ├── entrypoint.sh
@@ -194,7 +200,14 @@ DJANGO_SUPERUSER_PASSWORD=admin
 
 ## Основные эндпоинты
 
-В разработке.
+- [Главная страница](http://localhost:8000/)
+- [Healthcheck](http://localhost:8000/health/)
+- [Справочники](http://localhost:8000/references/)
+- [Статусы](http://localhost:8000/references/statuses/)
+- [Типы операций](http://localhost:8000/references/operation-types/)
+- [Категории](http://localhost:8000/references/categories/)
+- [Подкатегории](http://localhost:8000/references/subcategories/)
+- [Django Admin](http://localhost:8000/admin/)
 
 ---
 

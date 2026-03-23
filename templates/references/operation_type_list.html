@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Типы операций</h1>
+
+  <p>
+    <a href="{% url 'references:operation_type_create' %}">Добавить тип операции</a>
+  </p>
+
+  <ul>
+    {% for operation_type in operation_types %}
+      <li>
+        {{ operation_type.name }}
+        <a href="{% url 'references:operation_type_update' operation_type.pk %}">Редактировать</a>
+        <a href="{% url 'references:operation_type_delete' operation_type.pk %}">Удалить</a>
+      </li>
+    {% empty %}
+      <li>Типы операций пока не добавлены.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

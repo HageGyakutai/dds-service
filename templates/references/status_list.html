@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Статусы</h1>
+
+  <p>
+    <a href="{% url 'references:status_create' %}">Добавить статус</a>
+  </p>
+
+  <ul>
+    {% for status in statuses %}
+      <li>
+        {{ status.name }}
+        <a href="{% url 'references:status_update' status.pk %}">Редактировать</a>
+        <a href="{% url 'references:status_delete' status.pk %}">Удалить</a>
+      </li>
+    {% empty %}
+      <li>Статусы пока не добавлены.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}

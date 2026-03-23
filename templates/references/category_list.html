@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1>Категории</h1>
+
+  <p>
+    <a href="{% url 'references:category_create' %}">Добавить категорию</a>
+  </p>
+
+  <ul>
+    {% for category in categories %}
+      <li>
+        {{ category.name }} ({{ category.operation_type }})
+        <a href="{% url 'references:category_update' category.pk %}">Редактировать</a>
+        <a href="{% url 'references:category_delete' category.pk %}">Удалить</a>
+      </li>
+    {% empty %}
+      <li>Категории пока не добавлены.</li>
+    {% endfor %}
+  </ul>
+{% endblock %}
