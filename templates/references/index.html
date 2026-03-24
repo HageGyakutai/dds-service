@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Управление справочниками</h1>
+  <h1 class="h3 mb-3">Управление справочниками</h1>
 
-  <ul>
-    <li><a href="{% url 'references:status_list' %}">Статусы</a></li>
-    <li><a href="{% url 'references:operation_type_list' %}">Типы операций</a></li>
-    <li><a href="{% url 'references:category_list' %}">Категории</a></li>
-    <li><a href="{% url 'references:subcategory_list' %}">Подкатегории</a></li>
-  </ul>
+  <div class="list-group">
+    <a class="list-group-item list-group-item-action" href="{% url 'references:status_list' %}">Статусы</a>
+    <a class="list-group-item list-group-item-action" href="{% url 'references:operation_type_list' %}">Типы операций</a>
+    <a class="list-group-item list-group-item-action" href="{% url 'references:category_list' %}">Категории</a>
+    <a class="list-group-item list-group-item-action" href="{% url 'references:subcategory_list' %}">Подкатегории</a>
+  </div>
 {% endblock %}

@@ -1,21 +1,27 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Записи ДДС</h1>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Записи ДДС</h1>
+    <a class="btn btn-primary" href="{% url 'transactions:cashflow_record_create' %}">Добавить запись</a>
+  </div>
 
-  <p>
-    <a href="{% url 'transactions:cashflow_record_create' %}">Добавить запись</a>
-  </p>
-
-  <form method="get">
-    {{ filter.form.as_p }}
-    <button type="submit">Фильтровать</button>
-    <a href="{% url 'home' %}">Сбросить</a>
-  </form>
+  <div class="card mb-4">
+    <div class="card-body">
+      <form method="get">
+        {{ filter.form.as_p }}
+        <div class="d-flex gap-2">
+          <button class="btn btn-primary" type="submit">Фильтровать</button>
+          <a class="btn btn-outline-secondary" href="{% url 'home' %}">Сбросить</a>
+        </div>
+      </form>
+    </div>
+  </div>
 
   {% if cashflow_records %}
-    <table>
-      <thead>
+    <div class="table-responsive">
+      <table class="table table-striped table-hover align-middle">
+      <thead class="table-light">
         <tr>
           <th>Дата</th>
           <th>Статус</th>
@@ -27,7 +33,7 @@
           <th>Действия</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="table-group-divider">
         {% for record in cashflow_records %}
           <tr>
             <td>{{ record.record_date }}</td>
@@ -38,32 +44,45 @@
             <td>{{ record.amount }}</td>
             <td>{{ record.comment|default:"-" }}</td>
             <td>
-              <a href="{% url 'transactions:cashflow_record_update' record.pk %}">Редактировать</a>
-              <a href="{% url 'transactions:cashflow_record_delete' record.pk %}">Удалить</a>
+              <a class="btn btn-sm btn-outline-primary" href="{% url 'transactions:cashflow_record_update' record.pk %}">Редактировать</a>
+              <a class="btn btn-sm btn-outline-danger" href="{% url 'transactions:cashflow_record_delete' record.pk %}">Удалить</a>
             </td>
           </tr>
         {% endfor %}
       </tbody>
     </table>
+    </div>
   {% elif has_records %}
-    <p>По выбранным фильтрам записи не найдены.</p>
+    <div class="alert alert-warning">По выбранным фильтрам записи не найдены.</div>
   {% else %}
-    <p>Записей пока нет.</p>
+    <div class="alert alert-info">Записей пока нет.</div>
   {% endif %}
 
   {% if is_paginated %}
-    <nav>
+    <nav aria-label="Пагинация">
+      <ul class="pagination">
       {% if page_obj.has_previous %}
-        <a href="?page=1{% if querystring %}&{{ querystring }}{% endif %}">Первая</a>
-        <a href="?page={{ page_obj.previous_page_number }}{% if querystring %}&{{ querystring }}{% endif %}">Назад</a>
+        <li class="page-item">
+          <a class="page-link" href="?page=1{% if querystring %}&{{ querystring }}{% endif %}">Первая</a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if querystring %}&{{ querystring }}{% endif %}">Назад</a>
+        </li>
       {% endif %}
 
-      <span>Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+      <li class="page-item disabled">
+        <span class="page-link">Страница {{ page_obj.number }} из {{ page_obj.paginator.num_pages }}</span>
+      </li>
 
       {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}{% if querystring %}&{{ querystring }}{% endif %}">Вперёд</a>
-        <a href="?page={{ page_obj.paginator.num_pages }}{% if querystring %}&{{ querystring }}{% endif %}">Последняя</a>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if querystring %}&{{ querystring }}{% endif %}">Вперёд</a>
+        </li>
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if querystring %}&{{ querystring }}{% endif %}">Последняя</a>
+        </li>
       {% endif %}
+      </ul>
     </nav>
   {% endif %}
 {% endblock %}

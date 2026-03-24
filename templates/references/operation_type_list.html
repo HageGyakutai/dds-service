@@ -1,21 +1,22 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Типы операций</h1>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Типы операций</h1>
+    <a class="btn btn-primary" href="{% url 'references:operation_type_create' %}">Добавить тип операции</a>
+  </div>
 
-  <p>
-    <a href="{% url 'references:operation_type_create' %}">Добавить тип операции</a>
-  </p>
-
-  <ul>
+  <div class="list-group">
     {% for operation_type in operation_types %}
-      <li>
-        {{ operation_type.name }}
-        <a href="{% url 'references:operation_type_update' operation_type.pk %}">Редактировать</a>
-        <a href="{% url 'references:operation_type_delete' operation_type.pk %}">Удалить</a>
-      </li>
+      <div class="list-group-item d-flex justify-content-between align-items-center">
+        <span>{{ operation_type.name }}</span>
+        <div class="d-flex gap-2">
+          <a class="btn btn-sm btn-outline-primary" href="{% url 'references:operation_type_update' operation_type.pk %}">Редактировать</a>
+          <a class="btn btn-sm btn-outline-danger" href="{% url 'references:operation_type_delete' operation_type.pk %}">Удалить</a>
+        </div>
+      </div>
     {% empty %}
-      <li>Типы операций пока не добавлены.</li>
+      <div class="list-group-item">Типы операций пока не добавлены.</div>
     {% endfor %}
-  </ul>
+  </div>
 {% endblock %}

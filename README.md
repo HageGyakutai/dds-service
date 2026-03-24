@@ -29,6 +29,25 @@
 
 ---
 
+## Скриншоты
+
+### Список записей ДДС
+![Список записей ДДС](docs/screenshots/list.png)
+
+### Форма создания записи ДДС
+![Форма создания записи ДДС](docs/screenshots/cashflow-create-form.png)
+
+### Подтверждение удаления записи
+![Подтверждение удаления записи ДДС](docs/screenshots/delete-confirm.png)
+
+### Раздел справочников
+![Раздел справочников](docs/screenshots/references.png)
+
+### CRUD статусов
+![Список статусов (CRUD)](docs/screenshots/references-statuses.png)
+
+---
+
 ## Динамические зависимости формы
 
 Для формы создания/редактирования записи ДДС реализованы зависимые поля:
@@ -65,6 +84,35 @@
 - PostgreSQL
 - Docker / Docker Compose
 - uv, pre-commit, GitHub Actions
+
+---
+
+## Выбор БД: PostgreSQL и переключение на SQLite
+
+В проекте по умолчанию используется **PostgreSQL** (через Docker), потому что это более production-like сценарий и он лучше отражает реальные backend-практики (настройка соединения, миграции, работа в контейнерном окружении).
+
+Тестовое задание допускает SQLite, поэтому проект можно запускать и с SQLite для упрощённого локального режима.
+
+### Режим по умолчанию (PostgreSQL)
+
+Используется в текущей конфигурации `docker-compose` и `.env`:
+
+- `SQL_ENGINE=django.db.backends.postgresql_psycopg2`
+- `POSTGRES_*` переменные (`POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_HOST`, `POSTGRES_PORT`)
+
+### Как переключиться на SQLite (локально)
+
+В `.env` укажи:
+
+```dotenv
+SQL_ENGINE=django.db.backends.sqlite3
+POSTGRES_DB=db.sqlite3
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+POSTGRES_HOST=
+POSTGRES_PORT=
+SQL_OPTIONS=
+```
 
 ---
 
