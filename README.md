@@ -283,10 +283,11 @@ docker compose exec web uv run pytest
 Ключевые сценарии покрыты отдельными тестовыми файлами:
 - `tests/test_cashflow_validation.py` — серверная валидация записи ДДС;
 - `tests/test_cashflow_list_filtering.py` — список, фильтрация и пагинация;
+  - включает кейс фильтрации по диапазону дат (`date_from`/`date_to`);
+- `tests/test_cashflow_create.py` — создание записи ДДС (GET формы, успешный create, невалидные сценарии по доменным связям);
 - `tests/test_cashflow_update.py` — редактирование записи ДДС;
 - `tests/test_cashflow_dynamic_dependencies.py` — API и динамические зависимости полей формы;
-- `tests/test_cashflow_delete.py` — удаление записи ДДС (confirm page, успешное удаление, 404 для несуществующей записи);
-
+- `tests/test_cashflow_delete.py` — удаление записи ДДС (confirm page, успешное удаление, 404 для несуществующей записи).
 ---
 
 ## Автор

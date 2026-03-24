@@ -108,3 +108,21 @@ def test_cashflow_list_preserves_filter_on_second_page(
 
     for record in response.context["cashflow_records"]:
         assert record.status_id == reference_data["status_business"].id
+
+
+@pytest.mark.django_db
+def test_cashflow_list_filters_by_date_range(client, cashflow_records_batch):
+    """Проверяет фильтрацию списка по заданному диапазону дат."""
+    response = client.get(
+        reverse("home"),
+        {
+            "date_from": "2025-01-11",
+            "date_to": "2025-01-20",
+        },
+    )
+
+    assert response.status_code == 200
+    assert len(response.context["cashflow_records"]) == 10
+
+    for record in response.context["cashflow_records"]:
+        assert date(2025, 1, 11) <= record.record_date <= date(2025, 1, 20)
