@@ -25,10 +25,11 @@
 - фильтрация записей ДДС по периоду дат, статусу, типу операции, категории и подкатегории;
 - управление справочниками (`Status`, `OperationType`, `Category`, `SubCategory`) через отдельный раздел `/references/`;
 - серверная валидация обязательных полей и доменных бизнес-правил.
+- удаление записи ДДС через отдельную страницу подтверждения, с редиректом на список и сообщением об успешном удалении;
 
 ---
 
-## Динамические зависимости формы (`#9`)
+## Динамические зависимости формы
 
 Для формы создания/редактирования записи ДДС реализованы зависимые поля:
 
@@ -40,6 +41,18 @@
 - backend: DRF API endpoints в `apps/transactions/views/dependencies.py`;
 - frontend: JS-логика в `apps/transactions/static/transactions/form_dependencies.js`;
 - серверная защита: ограничение queryset в `CashflowRecordForm.__init__` + валидация в `clean()`.
+
+---
+
+## Удаление записи ДДС
+
+Реализован отдельный сценарий удаления записи ДДС:
+
+- ссылка `Удалить` доступна в таблице списка записей;
+- перед удалением показывается страница подтверждения действия;
+- удаление выполняется `POST`-запросом с CSRF-защитой;
+- после успешного удаления пользователь возвращается к списку записей и видит сообщение об успехе;
+- для несуществующей записи возвращается корректный `404`;
 
 ---
 
@@ -245,6 +258,8 @@ DJANGO_SUPERUSER_PASSWORD=admin
 - [Создание записи ДДС](http://localhost:8000/transactions/create/)
 - `GET /transactions/api/categories/?operation_type_id=<uuid>` — категории по типу операции
 - `GET /transactions/api/subcategories/?category_id=<uuid>` — подкатегории по категории
+- `GET /transactions/<uuid:pk>/delete/` — страница подтверждения удаления записи ДДС
+- `POST /transactions/<uuid:pk>/delete/` — подтверждение и удаление записи ДДС
 - [Django Admin](http://localhost:8000/admin/)
 
 ---
@@ -268,8 +283,9 @@ docker compose exec web uv run pytest
 Ключевые сценарии покрыты отдельными тестовыми файлами:
 - `tests/test_cashflow_validation.py` — серверная валидация записи ДДС;
 - `tests/test_cashflow_list_filtering.py` — список, фильтрация и пагинация;
-- `tests/test_cashflow_update.py` — редактирование записи ДДС.
-- `tests/test_cashflow_dynamic_dependencies.py` — API и динамические зависимости полей формы
+- `tests/test_cashflow_update.py` — редактирование записи ДДС;
+- `tests/test_cashflow_dynamic_dependencies.py` — API и динамические зависимости полей формы;
+- `tests/test_cashflow_delete.py` — удаление записи ДДС (confirm page, успешное удаление, 404 для несуществующей записи);
 
 ---
 

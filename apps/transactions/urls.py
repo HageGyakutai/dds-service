@@ -3,6 +3,7 @@ from django.urls import path
 from apps.transactions.views.create import CashflowRecordCreateView
 from apps.transactions.views.list import CashflowRecordListView
 from apps.transactions.views.update import CashflowRecordUpdateView
+from apps.transactions.views.delete import CashflowRecordDeleteView
 from apps.transactions.views.dependencies import (
     CategoriesByOperationTypeView,
     SubCategoriesByCategoryView,
@@ -18,6 +19,11 @@ urlpatterns = [
         "<uuid:pk>/update/",
         CashflowRecordUpdateView.as_view(),
         name="cashflow_record_update",
+    ),
+    path(
+        "<uuid:pk>/delete/",
+        CashflowRecordDeleteView.as_view(),
+        name="cashflow_record_delete",
     ),
     path(
         "api/categories/",
