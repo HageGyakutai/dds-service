@@ -14,15 +14,33 @@
 
 - категория принадлежит типу операции;
 - подкатегория принадлежит категории.
+
 ---
 
 ## Основные возможности
 
 - создание и редактирование записей ДДС с проверкой логических зависимостей между типом операции, категорией и подкатегорией;
+- динамические зависимости на форме записи: категории фильтруются по типу операции, подкатегории — по категории;
 - просмотр списка записей ДДС на главной странице;
 - фильтрация записей ДДС по периоду дат, статусу, типу операции, категории и подкатегории;
 - управление справочниками (`Status`, `OperationType`, `Category`, `SubCategory`) через отдельный раздел `/references/`;
 - серверная валидация обязательных полей и доменных бизнес-правил.
+
+---
+
+## Динамические зависимости формы (`#9`)
+
+Для формы создания/редактирования записи ДДС реализованы зависимые поля:
+
+- `operation_type` -> список `category`
+- `category` -> список `subcategory`
+
+Технически:
+
+- backend: DRF API endpoints в `apps/transactions/views/dependencies.py`;
+- frontend: JS-логика в `apps/transactions/static/transactions/form_dependencies.js`;
+- серверная защита: ограничение queryset в `CashflowRecordForm.__init__` + валидация в `clean()`.
+
 ---
 
 ## Технологический стек
@@ -225,6 +243,8 @@ DJANGO_SUPERUSER_PASSWORD=admin
 - [Подкатегории](http://localhost:8000/references/subcategories/)
 - [Список записей ДДС](http://localhost:8000/transactions/)
 - [Создание записи ДДС](http://localhost:8000/transactions/create/)
+- `GET /transactions/api/categories/?operation_type_id=<uuid>` — категории по типу операции
+- `GET /transactions/api/subcategories/?category_id=<uuid>` — подкатегории по категории
 - [Django Admin](http://localhost:8000/admin/)
 
 ---
@@ -249,6 +269,7 @@ docker compose exec web uv run pytest
 - `tests/test_cashflow_validation.py` — серверная валидация записи ДДС;
 - `tests/test_cashflow_list_filtering.py` — список, фильтрация и пагинация;
 - `tests/test_cashflow_update.py` — редактирование записи ДДС.
+- `tests/test_cashflow_dynamic_dependencies.py` — API и динамические зависимости полей формы
 
 ---
 

@@ -128,10 +128,7 @@ def test_cashflow_update_rejects_category_from_wrong_operation_type(
 
     assert response.status_code == 200
     assert "category" in response.context["form"].errors
-    assert (
-        response.context["form"].errors["category"][0]
-        == "Выбранная категория не относится к указанному типу операции."
-    )
+    assert response.context["form"].errors["category"]
     assert cashflow_record.operation_type_id == references_data["expense_type"].id
 
 
@@ -162,8 +159,5 @@ def test_cashflow_update_rejects_subcategory_from_wrong_category(
 
     assert response.status_code == 200
     assert "subcategory" in response.context["form"].errors
-    assert (
-        response.context["form"].errors["subcategory"][0]
-        == "Выбранная подкатегория не относится к указанной категории."
-    )
+    assert response.context["form"].errors["subcategory"]
     assert cashflow_record.subcategory_id == references_data["proxy"].id

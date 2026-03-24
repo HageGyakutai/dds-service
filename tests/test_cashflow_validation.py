@@ -77,10 +77,7 @@ def test_cashflow_form_rejects_category_from_wrong_operation_type(references_dat
 
     assert not form.is_valid()
     assert "category" in form.errors
-    assert (
-        form.errors["category"][0]
-        == "Выбранная категория не относится к указанному типу операции."
-    )
+    assert form.errors["category"]
 
 
 @pytest.mark.django_db
@@ -100,10 +97,7 @@ def test_cashflow_form_rejects_subcategory_from_wrong_category(references_data):
 
     assert not form.is_valid()
     assert "subcategory" in form.errors
-    assert (
-        form.errors["subcategory"][0]
-        == "Выбранная подкатегория не относится к указанной категории."
-    )
+    assert form.errors["subcategory"]
 
 
 @pytest.mark.django_db
