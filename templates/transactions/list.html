@@ -24,7 +24,7 @@
           <th>Подкатегория</th>
           <th>Сумма</th>
           <th>Комментарий</th>
-           <th>Действия</th>
+          <th>Действия</th>
         </tr>
       </thead>
       <tbody>
@@ -39,6 +39,7 @@
             <td>{{ record.comment|default:"-" }}</td>
             <td>
               <a href="{% url 'transactions:cashflow_record_update' record.pk %}">Редактировать</a>
+              <a href="{% url 'transactions:cashflow_record_delete' record.pk %}">Удалить</a>
             </td>
           </tr>
         {% endfor %}

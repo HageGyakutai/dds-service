@@ -9,6 +9,15 @@
         <a href="/">Главная</a>
         <a href="/references/">Справочники</a>
     </nav>
+
+    {% if messages %}
+      <ul>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
     {% block content %}{% endblock %}
 </body>
 </html>
