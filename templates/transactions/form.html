@@ -1,9 +1,17 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
   <h1>{{ title }}</h1>
 
-  <form method="post">
+  <form
+    method="post"
+    id="cashflow-record-form"
+    data-categories-url="{% url 'transactions:categories_by_operation_type' %}"
+    data-subcategories-url="{% url 'transactions:subcategories_by_category' %}"
+    data-initial-category="{{ form.category.value|default_if_none:'' }}"
+    data-initial-subcategory="{{ form.subcategory.value|default_if_none:'' }}"
+  >
     {% csrf_token %}
     {{ form.as_p }}
 
@@ -13,4 +21,6 @@
   <p>
     <a href="{{ cancel_url }}">Отмена</a>
   </p>
+
+  <script src="{% static 'transactions/form_dependencies.js' %}"></script>
 {% endblock %}
