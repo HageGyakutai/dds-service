@@ -1,21 +1,22 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1>Подкатегории</h1>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="h3 mb-0">Подкатегории</h1>
+    <a class="btn btn-primary" href="{% url 'references:subcategory_create' %}">Добавить подкатегорию</a>
+  </div>
 
-  <p>
-    <a href="{% url 'references:subcategory_create' %}">Добавить подкатегорию</a>
-  </p>
-
-  <ul>
+  <div class="list-group">
     {% for subcategory in subcategories %}
-      <li>
-        {{ subcategory.name }} ({{ subcategory.category }})
-        <a href="{% url 'references:subcategory_update' subcategory.pk %}">Редактировать</a>
-        <a href="{% url 'references:subcategory_delete' subcategory.pk %}">Удалить</a>
-      </li>
+      <div class="list-group-item d-flex justify-content-between align-items-center">
+        <span>{{ subcategory.name }} <span class="text-muted">({{ subcategory.category }})</span></span>
+        <div class="d-flex gap-2">
+          <a class="btn btn-sm btn-outline-primary" href="{% url 'references:subcategory_update' subcategory.pk %}">Редактировать</a>
+          <a class="btn btn-sm btn-outline-danger" href="{% url 'references:subcategory_delete' subcategory.pk %}">Удалить</a>
+        </div>
+      </div>
     {% empty %}
-      <li>Подкатегории пока не добавлены.</li>
+      <div class="list-group-item">Подкатегории пока не добавлены.</div>
     {% endfor %}
-  </ul>
+  </div>
 {% endblock %}

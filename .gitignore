@@ -12,4 +12,5 @@ logs/
 dist/
 build/
 script_task
-docs
+docs/[back] Тестовое задание (backend-разработчик).pdf
+docs/interview_notes.md
