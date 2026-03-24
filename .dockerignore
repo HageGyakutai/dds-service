@@ -23,5 +23,4 @@ build/
 # IDE
 .idea/
 .vscode/
-script_task
 docs
