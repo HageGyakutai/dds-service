@@ -1,5 +1,6 @@
 from django.contrib import messages
 from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import DeleteView
 
 from apps.transactions.models.cashflow_record import CashflowRecord
@@ -12,11 +13,11 @@ class CashflowRecordDeleteView(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["title"] = "Удаление записи ДДС"
+        context["title"] = _("Delete cashflow record")
         context["cancel_url"] = reverse_lazy("transactions:cashflow_record_list")
         return context
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        messages.success(self.request, "Запись ДДС удалена.")
+        messages.success(self.request, _("Cashflow record deleted."))
         return response

@@ -1,0 +1,234 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-03-26 14:00+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: ru\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || "
+"(n%100>=11 && n%100<=14)? 2 : 3);\n"
+
+msgid "Name"
+msgstr "Название"
+
+msgid "Operation type"
+msgstr "Тип операции"
+
+msgid "Category"
+msgstr "Категория"
+
+msgid "Categories"
+msgstr "Категории"
+
+msgid "created"
+msgstr "создано"
+
+msgid "updated"
+msgstr "обновлено"
+
+msgid "Operation Type"
+msgstr "Тип операции"
+
+msgid "Operation Types"
+msgstr "Типы операций"
+
+msgid "Status"
+msgstr "Статус"
+
+msgid "Statuses"
+msgstr "Статусы"
+
+msgid "Subcategory"
+msgstr "Подкатегория"
+
+msgid "Subcategories"
+msgstr "Подкатегории"
+
+msgid "Create category"
+msgstr "Создание категории"
+
+msgid "Update category"
+msgstr "Редактирование категории"
+
+msgid "Delete category"
+msgstr "Удаление категории"
+
+msgid "Create operation type"
+msgstr "Создание типа операции"
+
+msgid "Update operation type"
+msgstr "Редактирование типа операции"
+
+msgid "Delete operation type"
+msgstr "Удаление типа операции"
+
+msgid "Create status"
+msgstr "Создание статуса"
+
+msgid "Update status"
+msgstr "Редактирование статуса"
+
+msgid "Delete status"
+msgstr "Удаление статуса"
+
+msgid "Create subcategory"
+msgstr "Создание подкатегории"
+
+msgid "Update subcategory"
+msgstr "Редактирование подкатегории"
+
+msgid "Delete subcategory"
+msgstr "Удаление подкатегории"
+
+msgid "Date from"
+msgstr "Дата от"
+
+msgid "Date to"
+msgstr "Дата до"
+
+msgid "Date"
+msgstr "Дата"
+
+msgid "Amount"
+msgstr "Сумма"
+
+msgid "Comment"
+msgstr "Комментарий"
+
+msgid "Selected category does not belong to the chosen operation type."
+msgstr "Выбранная категория не относится к указанному типу операции."
+
+msgid "Selected subcategory does not belong to the chosen category."
+msgstr "Выбранная подкатегория не относится к указанной категории."
+
+msgid "Record date"
+msgstr "Дата записи"
+
+msgid "Cashflow Record"
+msgstr "Запись ДДС"
+
+msgid "Cashflow Records"
+msgstr "Записи ДДС"
+
+msgid "Category does not belong to selected operation type."
+msgstr "Категория не относится к выбранному типу операции."
+
+msgid "Subcategory does not belong to selected category."
+msgstr "Подкатегория не относится к выбранной категории."
+
+msgid "Create cashflow record"
+msgstr "Создание записи о движении денежных средств"
+
+msgid "Delete cashflow record"
+msgstr "Удаление записи ДДС"
+
+msgid "Cashflow record deleted."
+msgstr "Запись ДДС удалена."
+
+msgid "Update cashflow record"
+msgstr "Редактирование записи о движении денежных средств"
+
+msgid "Russian"
+msgstr "Русский"
+
+msgid "English"
+msgstr "Английский"
+
+msgid "Home"
+msgstr "Главная"
+
+msgid "References"
+msgstr "Справочники"
+
+msgid "Add category"
+msgstr "Добавить категорию"
+
+msgid "Edit"
+msgstr "Редактировать"
+
+msgid "Delete"
+msgstr "Удалить"
+
+msgid "No categories added yet."
+msgstr "Категории пока не добавлены."
+
+msgid "Are you sure you want to delete: \"%(object_name)s\"?"
+msgstr "Вы уверены, что хотите удалить: \"%(object_name)s\"?"
+
+msgid "Cancel"
+msgstr "Отмена"
+
+msgid "Save"
+msgstr "Сохранить"
+
+msgid "Reference management"
+msgstr "Управление справочниками"
+
+msgid "Operation types"
+msgstr "Типы операций"
+
+msgid "Add operation type"
+msgstr "Добавить тип операции"
+
+msgid "No operation types added yet."
+msgstr "Типы операций пока не добавлены."
+
+msgid "Add status"
+msgstr "Добавить статус"
+
+msgid "No statuses added yet."
+msgstr "Статусы пока не добавлены."
+
+msgid "Add subcategory"
+msgstr "Добавить подкатегорию"
+
+msgid "No subcategories added yet."
+msgstr "Подкатегории пока не добавлены."
+
+msgid "Cashflow records"
+msgstr "Записи ДДС"
+
+msgid "Add record"
+msgstr "Добавить запись"
+
+msgid "Filter"
+msgstr "Фильтровать"
+
+msgid "Reset"
+msgstr "Сбросить"
+
+msgid "Type"
+msgstr "Тип"
+
+msgid "Actions"
+msgstr "Действия"
+
+msgid "No records found for selected filters."
+msgstr "По выбранным фильтрам записи не найдены."
+
+msgid "No records yet."
+msgstr "Записей пока нет."
+
+msgid "Pagination"
+msgstr "Пагинация"
+
+msgid "First"
+msgstr "Первая"
+
+msgid "Previous"
+msgstr "Назад"
+
+msgid "Page %(page)s of %(pages)s"
+msgstr "Страница %(page)s из %(pages)s"
+
+msgid "Next"
+msgstr "Вперёд"
+
+msgid "Last"
+msgstr "Последняя"
