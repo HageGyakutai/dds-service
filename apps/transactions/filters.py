@@ -1,4 +1,5 @@
 import django_filters
+from django.utils.translation import gettext_lazy as _
 
 from apps.references.models.category import Category
 from apps.references.models.operation_type import OperationType
@@ -11,28 +12,28 @@ class CashflowRecordFilter(django_filters.FilterSet):
     date_from = django_filters.DateFilter(
         field_name="record_date",
         lookup_expr="gte",
-        label="Дата от",
+        label=_("Date from"),
     )
     date_to = django_filters.DateFilter(
         field_name="record_date",
         lookup_expr="lte",
-        label="Дата до",
+        label=_("Date to"),
     )
     status = django_filters.ModelChoiceFilter(
         queryset=Status.objects.all(),
-        label="Статус",
+        label=_("Status"),
     )
     operation_type = django_filters.ModelChoiceFilter(
         queryset=OperationType.objects.all(),
-        label="Тип операции",
+        label=_("Operation type"),
     )
     category = django_filters.ModelChoiceFilter(
         queryset=Category.objects.all(),
-        label="Категория",
+        label=_("Category"),
     )
     subcategory = django_filters.ModelChoiceFilter(
         queryset=SubCategory.objects.all(),
-        label="Подкатегория",
+        label=_("Subcategory"),
     )
 
     class Meta:

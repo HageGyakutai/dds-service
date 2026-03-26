@@ -1,4 +1,5 @@
 from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from apps.references.models.subcategory import SubCategory
@@ -19,7 +20,7 @@ class SubCategoryCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["title"] = "Создание подкатегории"
+        context["title"] = _("Create subcategory")
         context["cancel_url"] = reverse_lazy("references:subcategory_list")
         return context
 
@@ -32,7 +33,7 @@ class SubCategoryUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["title"] = "Редактирование подкатегории"
+        context["title"] = _("Update subcategory")
         context["cancel_url"] = reverse_lazy("references:subcategory_list")
         return context
 
@@ -44,6 +45,6 @@ class SubCategoryDeleteView(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["title"] = "Удаление подкатегории"
+        context["title"] = _("Delete subcategory")
         context["cancel_url"] = reverse_lazy("references:subcategory_list")
         return context

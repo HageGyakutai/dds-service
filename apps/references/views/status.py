@@ -1,4 +1,5 @@
 from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from apps.references.models.status import Status
@@ -19,7 +20,7 @@ class StatusCreateView(CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["title"] = "Создание статуса"
+        context["title"] = _("Create status")
         context["cancel_url"] = reverse_lazy("references:status_list")
         return context
 
@@ -32,7 +33,7 @@ class StatusUpdateView(UpdateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["title"] = "Редактирование статуса"
+        context["title"] = _("Update status")
         context["cancel_url"] = reverse_lazy("references:status_list")
         return context
 
@@ -44,6 +45,6 @@ class StatusDeleteView(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["title"] = "Удаление статуса"
+        context["title"] = _("Delete status")
         context["cancel_url"] = reverse_lazy("references:status_list")
         return context

@@ -1,6 +1,7 @@
 import uuid
 
 from django import forms
+from django.utils.translation import gettext_lazy as _
 
 from apps.references.models.category import Category
 from apps.references.models.subcategory import SubCategory
@@ -28,6 +29,15 @@ class CashflowRecordForm(forms.ModelForm):
             "category",
             "subcategory",
         ]
+        labels = {
+            "record_date": _("Date"),
+            "amount": _("Amount"),
+            "comment": _("Comment"),
+            "status": _("Status"),
+            "operation_type": _("Operation type"),
+            "category": _("Category"),
+            "subcategory": _("Subcategory"),
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -72,14 +82,17 @@ class CashflowRecordForm(forms.ModelForm):
             if category.operation_type_id != operation_type.id:
                 self.add_error(
                     "category",
-                    "Выбранная категория не относится к указанному типу операции.",
+                    _(
+                        "Selected category does not belong"
+                        " to the chosen operation type."
+                    ),
                 )
 
         if category and subcategory:
             if subcategory.category_id != category.id:
                 self.add_error(
                     "subcategory",
-                    "Выбранная подкатегория не относится к указанной категории.",
+                    _("Selected subcategory does not belong to the chosen category."),
                 )
 
         return cleaned_data
