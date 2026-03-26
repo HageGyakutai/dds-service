@@ -82,7 +82,10 @@ class CashflowRecordForm(forms.ModelForm):
             if category.operation_type_id != operation_type.id:
                 self.add_error(
                     "category",
-                    _("Selected category does not belong to the chosen operation type."),
+                    _(
+                        "Selected category does not belong"
+                        " to the chosen operation type."
+                    ),
                 )
 
         if category and subcategory:
