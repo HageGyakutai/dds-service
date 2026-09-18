@@ -1,382 +1,232 @@
-# dds-service
+# Cashflow Management Service
 
-## Назначение
+[![CI](https://github.com/HageGyakutai/dds-service/actions/workflows/ci.yml/badge.svg)](https://github.com/HageGyakutai/dds-service/actions/workflows/ci.yml)
+[![Python 3.13](https://img.shields.io/badge/Python-3.13-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Django 5.2](https://img.shields.io/badge/Django-5.2-092E20?logo=django&logoColor=white)](https://www.djangoproject.com/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-Тестовое задание для позиции backend-разработчик.
+Веб-сервис для учёта движения денежных средств компании: поступлений и списаний с привязкой к статусу, типу операции, категории и подкатегории.
 
-Веб-приложение для учета движения денежных средств (ДДС): создание, просмотр, редактирование,
-удаление и фильтрация операций.
+Проект показывает полный путь небольшой бизнес-системы: от доменных правил и интерфейса пользователя до PostgreSQL, контейнеризации, автоматических тестов и CI.
 
----
+## Бизнес-задача
 
-## Описание проекта
-Сервис помогает вести учет финансовых операций с учетом логических зависимостей:
+Ручной учёт операций в таблицах быстро становится неудобным: появляются несогласованные категории, ошибки в классификации и сложности с поиском нужных записей.
 
-- категория принадлежит типу операции;
-- подкатегория принадлежит категории.
+Сервис решает эту задачу через:
 
----
+- единый журнал поступлений и списаний;
+- управляемые справочники статусов, типов, категорий и подкатегорий;
+- фильтрацию операций по периоду и классификаторам;
+- проверку связей `тип → категория → подкатегория` на сервере;
+- простой русско- и англоязычный веб-интерфейс.
 
-## Основные возможности
+## Возможности
 
-- создание и редактирование записей ДДС с проверкой логических зависимостей между типом операции, категорией и подкатегорией;
-- динамические зависимости на форме записи: категории фильтруются по типу операции, подкатегории — по категории;
-- просмотр списка записей ДДС на главной странице;
-- фильтрация записей ДДС по периоду дат, статусу, типу операции, категории и подкатегории;
-- управление справочниками (`Status`, `OperationType`, `Category`, `SubCategory`) через отдельный раздел `/references/`;
-- серверная валидация обязательных полей и доменных бизнес-правил.
-- удаление записи ДДС через отдельную страницу подтверждения, с редиректом на список и сообщением об успешном удалении;
+- создание, просмотр, редактирование и удаление операций;
+- фильтрация по датам, статусу, типу, категории и подкатегории;
+- пагинация журнала операций;
+- CRUD-интерфейс для справочников;
+- динамическая загрузка категорий и подкатегорий без перезагрузки страницы;
+- защита удаления связанных справочников через `PROTECT`;
+- UUID для доменных сущностей и `Decimal` для денежных значений;
+- локализация интерфейса на русский и английский языки;
+- healthcheck для проверки доступности приложения;
+- seed-команды для быстрого заполнения демонстрационными данными.
 
----
+## Демонстрация
 
-## Скриншоты
+### Журнал операций и фильтры
 
-### Список записей ДДС
-![Список записей ДДС](docs/screenshots/list.png)
+![Журнал операций ДДС](docs/screenshots/list.png)
 
-### Форма создания записи ДДС
-![Форма создания записи ДДС](docs/screenshots/cashflow-create-form.png)
+### Создание операции с зависимыми справочниками
 
-### Подтверждение удаления записи
-![Подтверждение удаления записи ДДС](docs/screenshots/delete-confirm.png)
+![Форма создания операции](docs/screenshots/cashflow-create-form.png)
 
-### Раздел справочников
+<details>
+<summary>Другие экраны</summary>
+
+#### Управление справочниками
+
 ![Раздел справочников](docs/screenshots/references.png)
 
-### CRUD статусов
-![Список статусов (CRUD)](docs/screenshots/references-statuses.png)
+#### CRUD статусов
 
----
+![Список статусов](docs/screenshots/references-statuses.png)
 
-## Динамические зависимости формы
+#### Подтверждение удаления
 
-Для формы создания/редактирования записи ДДС реализованы зависимые поля:
+![Подтверждение удаления операции](docs/screenshots/delete-confirm.png)
 
-- `operation_type` -> список `category`
-- `category` -> список `subcategory`
+</details>
 
-Технически:
+## Что демонстрирует проект
 
-- backend: DRF API endpoints в `apps/transactions/views/dependencies.py`;
-- frontend: JS-логика в `apps/transactions/static/transactions/form_dependencies.js`;
-- серверная защита: ограничение queryset в `CashflowRecordForm.__init__` + валидация в `clean()`.
+- моделирование предметной области средствами Django ORM;
+- размещение бизнес-валидации на уровне формы и модели;
+- работу с PostgreSQL и миграциями;
+- серверный рендеринг Django Templates и небольшую JS-интеграцию;
+- JSON endpoints на Django REST Framework для зависимых полей формы;
+- воспроизводимый запуск через Docker Compose;
+- автоматические проверки в GitHub Actions;
+- тестирование ключевых пользовательских и негативных сценариев.
 
----
+> Проект не позиционируется как публичный REST API. Основной интерфейс — серверное Django-приложение; DRF применяется для вспомогательных JSON endpoints.
 
-## Удаление записи ДДС
+## Архитектура
 
-Реализован отдельный сценарий удаления записи ДДС:
+Приложение разделено на два домена:
 
-- ссылка `Удалить` доступна в таблице списка записей;
-- перед удалением показывается страница подтверждения действия;
-- удаление выполняется `POST`-запросом с CSRF-защитой;
-- после успешного удаления пользователь возвращается к списку записей и видит сообщение об успехе;
-- для несуществующей записи возвращается корректный `404`;
+- `transactions` — операции ДДС, фильтрация и пользовательские сценарии;
+- `references` — статусы и иерархические классификаторы.
 
----
-
-## Технологический стек
-
-- Python 3.13
-- Django
-- Django ORM
-- Django REST Framework
-- PostgreSQL
-- Docker / Docker Compose
-- uv, pre-commit, GitHub Actions
-
----
-
-## Локализация (i18n)
-
-В проекте настроена локализация интерфейса на 2 языка:
-
-- `ru` (по умолчанию)
-- `en`
-
-Что реализовано:
-
-- `LocaleMiddleware` подключен в Django middleware;
-- роуты Django i18n подключены через `path("i18n/", include("django.conf.urls.i18n"))`;
-- переключение языка доступно в шапке приложения (селект в `base.html`);
-- пользовательские строки интерфейса переведены через `gettext`/`{% trans %}`.
-
-Файлы переводов:
-
-- `locale/ru/LC_MESSAGES/django.po`
-- `locale/ru/LC_MESSAGES/django.mo`
-
----
-## Выбор БД: PostgreSQL и переключение на SQLite
-
-В проекте по умолчанию используется **PostgreSQL** (через Docker), потому что это более production-like сценарий и он лучше отражает реальные backend-практики (настройка соединения, миграции, работа в контейнерном окружении).
-
-Тестовое задание допускает SQLite, поэтому проект можно запускать и с SQLite для упрощённого локального режима.
-
-### Режим по умолчанию (PostgreSQL)
-
-Используется в текущей конфигурации `docker-compose` и `.env`:
-
-- `SQL_ENGINE=django.db.backends.postgresql_psycopg2`
-- `POSTGRES_*` переменные (`POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_HOST`, `POSTGRES_PORT`)
-
-### Как переключиться на SQLite (локально)
-
-В `.env` укажи:
-
-```dotenv
-SQL_ENGINE=django.db.backends.sqlite3
-POSTGRES_DB=db.sqlite3
-POSTGRES_USER=
-POSTGRES_PASSWORD=
-POSTGRES_HOST=
-POSTGRES_PORT=
-SQL_OPTIONS=
+```mermaid
+flowchart TD
+    UI["Django UI"] --> TX["transactions"]
+    UI --> REF["references"]
+    JS["Dependent selects"] --> API["DRF JSON endpoints"]
+    API --> REF
+    TX --> DB[(PostgreSQL)]
+    REF --> DB
 ```
 
----
-
-## Быстрый старт
-
-```bash
-docker compose up -d --build
-```
-
-После запуска сервис будет доступен:
-
-- Web: http://localhost:8000/
-- Admin: http://localhost:8000/admin/
-
----
-
-## Архитектура проекта
-
-Проект разделен на два основных домена:
-
-- `transactions` — работа с денежными операциями ДДС
-- `references` — справочники и классификаторы
-
-Раздел `/references/` предназначен для управления справочниками.
-В нём доступны списки и CRUD для `Status`, `OperationType`, `Category` и `SubCategory`.
-
-Главная страница `/` отображает список записей ДДС с фильтрацией и пагинацией.
-
-Раздел `/transactions/` содержит пользовательский flow для записей ДДС:
-формы создания и редактирования записи, а также routes, связанные с операциями ДДС.
-
-Связи моделей:
+Ключевые связи:
 
 ```text
 CashflowRecord
- ├── status → Status
- ├── operation_type → OperationType
- ├── category → Category
- └── subcategory → SubCategory
-
-Category → OperationType
-SubCategory → Category
+├── Status
+├── OperationType
+├── Category ────────> OperationType
+└── SubCategory ─────> Category
 ```
 
----
+Корректность иерархии проверяется дважды:
 
-## Структура проекта
+1. `CashflowRecordForm` ограничивает доступные значения и возвращает понятные ошибки пользователю.
+2. `CashflowRecord.clean()` защищает доменное правило при сохранении модели вне веб-формы.
 
-```text
-.
-├── apps/
-│   ├── references/             # справочники: статусы, типы, категории, подкатегории
-│   │   ├── data/               # seed-данные справочников
-│   │   ├── management/
-│   │   │   └── commands/       # кастомные management-команды
-│   │   ├── migrations/
-│   │   ├── models/
-│   │   │   ├── mixins.py
-│   │   │   ├── status.py
-│   │   │   ├── operation_type.py
-│   │   │   ├── category.py
-│   │   │   └── subcategory.py
-│   │   ├── views/              # CRUD-views раздела справочников
-│   │   ├── forms.py            # формы для управления справочниками
-│   │   ├── admin.py
-│   │   ├── apps.py
-│   │   ├── tests.py
-│   │   └── urls.py
-│   │
-│   └── transactions/           # денежные операции ДДС
-│       ├── management/
-│       │   └── commands/       # management-команды для записей ДДС
-│       ├── migrations/
-│       ├── models/
-│       │   └── cashflow_record.py
-│       ├── views/              # список, создание и редактирование записей ДДС
-│       ├── filters.py          # фильтрация списка записей ДДС
-│       ├── forms.py            # формы и валидация записей ДДС
-│       ├── admin.py
-│       ├── apps.py
-│       ├── tests.py
-│       └── urls.py
-│
-├── config/                     # конфигурация Django-проекта
-│   ├── settings/
-│   │   ├── components/         # database, middleware, templates, static, etc.
-│   │   └── base.py
-│   ├── urls.py
-│   ├── views.py
-│   ├── asgi.py
-│   └── wsgi.py
-│
-├── templates/
-│   ├── references/             # шаблоны раздела справочников
-│   ├── transactions/           # шаблоны списка и формы записей ДДС
-│   └── base.html
-│
-├── tests/                      # тесты проекта
-├── Dockerfile
-├── docker-compose.yml
-├── entrypoint.sh
-├── manage.py
-├── pyproject.toml
-└── README.md
-```
-- `createsuperuser_if_none_exists.py` — автосоздание суперпользователя
-- `seed_references.py` — заполнение стартовых справочников
-- `seed_cashflow_records.py` — генерация тестовых записей ДДС для ручной проверки фильтров и пагинации
+## Стек
 
----
+- Python 3.13;
+- Django 5.2, Django REST Framework, django-filter;
+- PostgreSQL 16;
+- Django Templates, Bootstrap, JavaScript;
+- Pytest, pytest-django, MyPy, Black, Flake8, pre-commit;
+- Docker, Docker Compose, uv;
+- GitHub Actions.
 
-## Запуск проекта
+## Быстрый запуск
 
-Клонировать репозиторий
+Понадобятся Git, Docker и Docker Compose.
+
 ```bash
 git clone https://github.com/HageGyakutai/dds-service.git
 cd dds-service
+cp .env.example .env
+docker compose up --build
 ```
-Подготовить переменные окружения:
- ```bash
- cp .env.example .env
- ```
-Запуск через Docker
-```bash
-docker compose up -d --build
-```
-> При старте контейнера автоматически применяются миграции, выполняется заполнение стартовых справочников и проверяется наличие суперпользователя.
 
-Для ручной проверки списка, фильтров и пагинации можно сгенерировать тестовые записи.
-По умолчанию команда создаёт `100` записей:
+При старте контейнер автоматически:
+
+1. ожидает готовности PostgreSQL;
+2. применяет миграции;
+3. создаёт начальные справочники;
+4. создаёт администратора, если его ещё нет.
+
+После запуска:
+
+- приложение: <http://localhost:8000/>;
+- справочники: <http://localhost:8000/references/>;
+- healthcheck: <http://localhost:8000/health/>;
+- Django Admin: <http://localhost:8000/admin/>.
+
+Демонстрационные данные администратора находятся в `.env.example`. Перед любым развёртыванием вне локальной среды замените их вместе с `SECRET_KEY`.
+
+Чтобы добавить 100 тестовых операций:
 
 ```bash
 docker compose exec web uv run python manage.py seed_cashflow_records
 ```
-Дополнительные параметры:
-- `--count` — количество записей
-- `--start-date` — дата начала генерации в формате YYYY-MM-DD
 
----
-
-## Миграции и заполнение справочников
-```bash
-uv run python manage.py migrate
-uv run python manage.py seed_references
-uv run python manage.py seed_cashflow_records
-```
-
----
-
-## Доступ к админ-панели
-Админ-панель доступна по адресу:
-
-http://localhost:8000/admin/
-
-Суперпользователь создается автоматически при запуске контейнера
-через кастомную Django management-команду:
-```bash
-uv run python manage.py createsuperuser_if_none_exists
-```
-Данные берутся из переменных окружения `.env`.
-
-### Данные по умолчанию
-
-```text
-Username: admin
-Email: admin@example.com
-Password: admin
-```
-### Настройка
-
-Вы можете изменить данные суперпользователя в `.env`:
-```dotenv
-DJANGO_SUPERUSER_USERNAME=admin
-DJANGO_SUPERUSER_EMAIL=admin@example.com
-DJANGO_SUPERUSER_PASSWORD=admin
-```
-> Рекомендуется изменить пароль перед использованием.
-
----
-
-## Основные эндпоинты
-
-- [Главная страница / список записей ДДС](http://localhost:8000/)
-- [Healthcheck](http://localhost:8000/health/)
-- [Справочники](http://localhost:8000/references/)
-- [Статусы](http://localhost:8000/references/statuses/)
-- [Типы операций](http://localhost:8000/references/operation-types/)
-- [Категории](http://localhost:8000/references/categories/)
-- [Подкатегории](http://localhost:8000/references/subcategories/)
-- [Список записей ДДС](http://localhost:8000/transactions/)
-- [Создание записи ДДС](http://localhost:8000/transactions/create/)
-- `GET /transactions/api/categories/?operation_type_id=<uuid>` — категории по типу операции
-- `GET /transactions/api/subcategories/?category_id=<uuid>` — подкатегории по категории
-- `GET /transactions/<uuid:pk>/delete/` — страница подтверждения удаления записи ДДС
-- `POST /transactions/<uuid:pk>/delete/` — подтверждение и удаление записи ДДС
-- [Django Admin](http://localhost:8000/admin/)
-
----
-
-## Тестирование
-
-Основной способ запуска тестов в проекте — внутри контейнера.
-
-Установка `dev`-зависимостей в уже поднятый контейнер:
+Можно задать количество и начальную дату:
 
 ```bash
-docker compose exec web uv sync --extra dev
+docker compose exec web uv run python manage.py seed_cashflow_records \
+  --count 25 \
+  --start-date 2026-01-01
 ```
 
-Запуск тестов:
+Остановить проект и удалить контейнеры:
 
 ```bash
-docker compose exec web uv run pytest
+docker compose down
 ```
 
-Ключевые сценарии покрыты отдельными тестовыми файлами:
-- `tests/test_cashflow_validation.py` — серверная валидация записи ДДС;
-- `tests/test_cashflow_list_filtering.py` — список, фильтрация и пагинация;
-  - включает кейс фильтрации по диапазону дат (`date_from`/`date_to`);
-- `tests/test_cashflow_create.py` — создание записи ДДС (GET формы, успешный create, невалидные сценарии по доменным связям);
-- `tests/test_cashflow_update.py` — редактирование записи ДДС;
-- `tests/test_cashflow_dynamic_dependencies.py` — API и динамические зависимости полей формы;
-- `tests/test_cashflow_delete.py` — удаление записи ДДС (confirm page, успешное удаление, 404 для несуществующей записи).
----
+## Проверка качества
 
-## Автор
-
-Запольских Сергей
-
-https://github.com/HageGyakutai
-
----
-
-## Локальные проверки
+В репозитории 29 автоматических тестов. Они проверяют smoke-сценарии, CRUD операций, фильтрацию, пагинацию, зависимые поля и нарушение доменных связей.
 
 ```bash
-uv run pre-commit install
-uv run pre-commit run --all-files
-```
-
-```bash
-uv sync --extra dev
+uv sync --extra dev --locked
 uv run black --check .
 uv run flake8 .
 uv run mypy .
-uv run pytest --maxfail=1 --disable-warnings
+uv run pytest
 ```
+
+GitHub Actions выполняет эти проверки на каждом push и pull request с PostgreSQL 16.
+
+## Основные маршруты
+
+| Метод | Маршрут | Назначение |
+|---|---|---|
+| `GET` | `/` | журнал операций с фильтрами |
+| `GET`, `POST` | `/transactions/create/` | создание операции |
+| `GET`, `POST` | `/transactions/<uuid>/update/` | редактирование операции |
+| `GET`, `POST` | `/transactions/<uuid>/delete/` | подтверждение и удаление |
+| `GET` | `/references/` | управление справочниками |
+| `GET` | `/transactions/api/categories/` | категории выбранного типа |
+| `GET` | `/transactions/api/subcategories/` | подкатегории выбранной категории |
+| `GET` | `/health/` | проверка доступности |
+| `GET` | `/admin/` | Django Admin |
+
+## Структура
+
+```text
+.
+├── apps/
+│   ├── references/       # справочники, модели, формы и CRUD
+│   └── transactions/     # операции, фильтры и пользовательские сценарии
+├── config/               # URL и модульные настройки Django
+├── locale/               # переводы интерфейса
+├── templates/            # серверные HTML-шаблоны
+├── tests/                # интеграционные и доменные тесты
+├── Dockerfile
+├── docker-compose.yml
+├── entrypoint.sh
+└── pyproject.toml
+```
+
+## Ограничения и возможное развитие
+
+Это законченный учебный MVP, а не production-система финансового учёта. В текущую версию намеренно не входят авторизация по ролям, аудит изменений, экспорт отчётов, публичный REST API и production WSGI-конфигурация.
+
+Следующие логичные шаги развития:
+
+- роли и разграничение доступа;
+- журнал аудита изменений;
+- экспорт в CSV/XLSX;
+- аналитические отчёты;
+- OpenAPI-контракт и полноценный REST API;
+- Gunicorn, HTTPS и deployment-конфигурация.
+
+## Автор
+
+Сергей Запольских — Python backend-разработчик.
+
+[GitHub](https://github.com/HageGyakutai)
+
+## Лицензия
+
+Проект распространяется по лицензии [MIT](LICENSE).
